@@ -1,11 +1,45 @@
 document.addEventListener("alpine:init", () => {
   Alpine.data("products", () => ({
     items: [
-      { id: 1, name: "Cappucino", img: "1.jpg", price: 20000 },
-      { id: 2, name: "Espresso", img: "2.jpg", price: 15000 },
-      { id: 3, name: "Americano", img: "3.jpg", price: 18000 },
-      { id: 4, name: "Kopi Susu Gula Aren", img: "4.jpg", price: 25000 },
-      { id: 5, name: "Hazelnut Latte", img: "3.jpg", price: 26000 },
+      { id: 1, name: "Cappucino Ice", img: "1.jpg", price: 15000 },
+      { id: 2, name: "Hazelnaut Latte", img: "2.jpg", price: 20000 },
+      { id: 3, name: "Americano Ice", img: "3.jpg", price: 14000 },
+      { id: 4, name: "Caramel Latte Ice", img: "4.jpg", price: 20000 },
+      { id: 5, name: "Chocolate Ice", img: "3.jpg", price: 15000 },
+      { id: 7, name: "Taro Ice", img: "3.jpg", price: 15000 },
+      { id: 8, name: "Mochacino Ice", img: "3.jpg", price: 18000 },
+      { id: 9, name: "Lychee Yaqult", img: "3.jpg", price: 17000 },
+      { id: 10, name: "Cafe Latte Ice", img: "3.jpg", price: 15000 },
+      { id: 11, name: "Kopi Susu Gula Aren Ice", img: "3.jpg", price: 18000 },
+      { id: 12, name: "Vanilla Latte Ice", img: "3.jpg", price: 20000 },
+      { id: 13, name: "Red Velvet Ice", img: "3.jpg", price: 15000 },
+      { id: 14, name: "Lychee Tea", img: "3.jpg", price: 13000 },
+      { id: 15, name: "Lemon Tea", img: "3.jpg", price: 12000 },
+      { id: 16, name: "Sweet Tea", img: "3.jpg", price: 15000 },
+      { id: 17, name: "Vanilla Tea", img: "3.jpg", price: 12000 },
+      { id: 18, name: "Butterfly Pea Lemon", img: "3.jpg", price: 12000 },
+      { id: 19, name: "Butterfly Pea Lychee", img: "3.jpg", price: 15000 },
+      { id: 20, name: "Matcha Milk", img: "3.jpg", price: 18000 },
+      { id: 21, name: "Espresso", img: "3.jpg", price: 10000 },
+      { id: 22, name: "Double Espresso", img: "3.jpg", price: 12000 },
+      { id: 23, name: "Americano Hot", img: "3.jpg", price: 12000 },
+      { id: 24, name: "Cappucino Hot", img: "3.jpg", price: 13000 },
+      { id: 25, name: "Latte Hot", img: "3.jpg", price: 14000 },
+      { id: 26, name: "Caramel Latte Hot", img: "3.jpg", price: 18000 },
+      { id: 27, name: "Kopi Susu Gula Aren Hot", img: "3.jpg", price: 15000 },
+      { id: 28, name: "Vanilla Latte Hot", img: "3.jpg", price: 18000 },
+      { id: 29, name: "Red Velvet Hot", img: "3.jpg", price: 13000 },
+      { id: 30, name: "Taro Hot", img: "3.jpg", price: 13000 },
+      { id: 31, name: "Mochacino Hot", img: "3.jpg", price: 16000 },
+      { id: 32, name: "V60", img: "3.jpg", price: 15000 },
+      { id: 33, name: "Jappanesse", img: "3.jpg", price: 15000 },
+      { id: 34, name: "Coklat Hot", img: "3.jpg", price: 13000 },
+      { id: 35, name: "Cireng Isi Ayam Suir", img: "3.jpg", price: 12000 },
+      { id: 36, name: "Kentang Goreng", img: "3.jpg", price: 12000 },
+      { id: 37, name: "Sandwich", img: "3.jpg", price: 12000 },
+      { id: 38, name: "Sempol", img: "3.jpg", price: 12000 },
+      { id: 39, name: "Croisanc", img: "3.jpg", price: 10000 },
+      { id: 40, name: "Nasi Goreng Story", img: "3.jpg", price: 13000 },
     ],
   }));
 
@@ -53,6 +87,7 @@ document.addEventListener("alpine:init", () => {
           // jika bukan barang yang diklik
           if (item.id !== id) {
             return item;
+            a;
           } else {
             item.quantity--;
             item.total = item.price * item.quantity;
@@ -70,6 +105,55 @@ document.addEventListener("alpine:init", () => {
     },
   });
 });
+
+// form validation
+const checkoutButton = document.querySelector(".checkout-button");
+checkoutButton.disabled = true;
+
+const form = document.querySelector("#checkoutForm");
+
+form.addEventListener("keyup", function () {
+  for (let i = 0; i < form.elements.length; i++) {
+    if (form.elements[i].value.length !== 0) {
+      checkoutButton.classList.remove("disabled");
+      checkoutButton.classList.add("disabled");
+    } else {
+      return false;
+    }
+  }
+  checkoutButton.disabled = false;
+  checkoutButton.classList.remove("disabled");
+});
+
+// kirim data ketika tombol checkout diklik
+checkoutButton.addEventListener("click", function (e) {
+  e.preventDefault();
+  const formData = new FormData(form);
+  const data = new URLSearchParams(formData);
+  const objData = Object.fromEntries(data);
+  const message = formatMessage(objData);
+  window.open("https:/wa.me/6285255216827?text=" + encodeURIComponent(message));
+});
+
+// format pesan whatsapp
+const formatMessage = (obj) => {
+  return `Data Customer :
+  Nama: ${obj.name}
+  Email: ${obj.email}
+  No HP: ${obj.phone}
+  
+Data Pesanan :
+  ${JSON.parse(obj.items).map(
+    (item) => `${item.name} (${item.quantity} x ${rupiah(item.total)}) \n`
+  )}
+TOTAL: ${rupiah(obj.total)}
+Terima Kasih.
+
+Note :
+Sertakan bukti pembayarannya!
+Bagi yang Cash silahkan langsung ke kasir!
+  `;
+};
 
 // konversi ke rupiah
 const rupiah = (number) => {
